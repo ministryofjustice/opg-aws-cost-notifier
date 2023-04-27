@@ -1,0 +1,41 @@
+name: Validate and Plan Terraform
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+defaults:
+ run:
+  shell: bash
+
+env:
+  TERRAFORM_VERSION: 1.4.6
+
+jobs:
+  lint-validate-and-plan:
+    name: 'Validate Infrastructure'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+
+      - name: Lint Terraform
+        id: tf_lint
+        run: terraform fmt -check -recursive
+
+      - name: Validate & Plan Terraform
+        id: tf_validate
+        working-directory: ./local
+        run: |
+          docker compose up -d
+          terraform init
+          terraform validate
+          terraform plan
+        
+    
