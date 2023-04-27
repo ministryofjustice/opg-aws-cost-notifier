@@ -1,0 +1,103 @@
+name: Build Cost Notifier Lambda Container
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+defaults:
+ run:
+  shell: bash
+  working-directory: ./lambda
+
+jobs:
+  build-containers:
+    name: "Test & Build Lambda Images"
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ env.APP_VERSION }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: unfor19/install-aws-cli-action@v1
+      - uses: actions/setup-python@v4
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.dev.txt
+
+      - name: Test with pytest
+        run: |
+          pytest --junitxml=unit-tests.xml
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          junit_files: '**/unit-tests.xml'
+
+      - name: Build Container
+        run: |
+          docker build --file Dockerfile --tag aws_cost_notifier:latest .
+
+      - name: Scan Image with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: aws_cost_notifier:latest
+          vuln-type: 'os,library'
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_ACTIONS }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_ACTIONS }}
+          aws-region: eu-west-1
+          role-to-assume: arn:aws:iam::311462405659:role/opg-cost-notifier-ci
+          role-duration-seconds: 3600
+          role-session-name: GitHubActions
+
+      - name: ECR Login
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registries: 311462405659
+
+      - name: Extract branch name
+        run: |
+          if [ "${{ github.head_ref }}" == "" ]; then
+            echo BRANCH_NAME=main >> $GITHUB_ENV
+          else
+            echo BRANCH_NAME=${{ github.head_ref }} >> $GITHUB_ENV
+          fi
+        id: extract_branch
+
+      - name: Retrieve Version
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          branch: ${{ env.BRANCH_NAME }}
+          name: version
+          search_artifacts: true
+          workflow: versioning.yml
+          workflow_conclusion: ""
+
+      - name: Add Version to Environment
+        run: echo APP_VERSION=`cat ../version.txt` >> $GITHUB_ENV
+
+      - name: Push Container
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          COST_NOTIFIER_ECR_REPOSITORY: shared/aws-cost-notifier
+        run: |
+          docker tag aws_cost_notifier:latest $ECR_REGISTRY/$COST_NOTIFIER_ECR_REPOSITORY:${{ env.APP_VERSION }}
+          if [ "${{ env.BRANCH_NAME }}" == "main" ]; then
+            docker tag aws_cost_notifier:latest $ECR_REGISTRY/$COST_NOTIFIER_ECR_REPOSITORY:latest
+            docker tag aws_cost_notifier:latest $ECR_REGISTRY/$COST_NOTIFIER_ECR_REPOSITORY:main-${{ env.APP_VERSION }}
+            # We want all of the tags pushed
+            docker push --all-tags $ECR_REGISTRY/$COST_NOTIFIER_ECR_REPOSITORY
+          else
+            docker push $ECR_REGISTRY/$COST_NOTIFIER_ECR_REPOSITORY:${{ env.APP_VERSION }}
+          fi
