@@ -1,0 +1,13 @@
+---
+version: "3.6"
+services:
+  localstack:
+    image: localstack/localstack:1.4
+    ports:
+      - "4566:4566"
+    healthcheck:
+      test: ["CMD-SHELL", "curl http://localhost:4566 || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
