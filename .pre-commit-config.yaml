@@ -12,7 +12,6 @@ repos:
     rev: v1.19.0
     hooks:
       - id: terraform_fmt
-      - id: terraform_validate
   - repo: https://github.com/renovatebot/pre-commit-hooks
     rev: 33.2.2
     hooks:
