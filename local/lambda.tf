@@ -7,8 +7,7 @@ module "aws_cost_notifier" {
   sns_topic_arn      = aws_sns_topic.immediate_cost_anomaly_updates.arn
   version_tag        = "latest"
   providers = {
-    aws            = aws
-    aws.us-east-1  = aws.us-east-1
-    aws.management = aws.management
+    aws           = aws
+    aws.us-east-1 = aws.us-east-1
   }
 }
