@@ -9,6 +9,5 @@ module "aws_cost_notifier" {
   providers = {
     aws            = aws
     aws.us-east-1  = aws.us-east-1
-    aws.management = aws.management
   }
 }
