@@ -38,7 +38,7 @@ RUN python -m pip install \
 FROM python-alpine AS production
 
 # Patch security vulnerabilities
-RUN apk upgrade --no-cache libcom_err
+RUN apk upgrade --no-cache libcom_err libcrypto1.1 libssl1.1 ncurses-terminfo-base
 
 # Include global arg in this stage of the build
 ARG FUNCTION_DIR
