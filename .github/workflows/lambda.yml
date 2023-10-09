@@ -101,3 +101,7 @@ jobs:
           else
             docker push $ECR_REGISTRY/$COST_NOTIFIER_ECR_REPOSITORY:${{ env.APP_VERSION }}
           fi
+
+      - name: Put Tag
+        if: ${{ env.BRANCH_NAME == 'SP-1731' }}
+        run: aws ssm put-parameter --region "eu-west-1" --name "/shared/aws-cost-notifier-lambda-version" --type "String" --value "${{ env.APP_VERSION }}" --overwrite
