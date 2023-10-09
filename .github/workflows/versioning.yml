@@ -17,8 +17,12 @@ jobs:
           fetch-depth: '0'
 
       - name: Extract branch name
-        shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_HEAD_REF#refs/heads/})"
+        run: |
+          if [ "${{ github.head_ref }}" == "" ]; then
+            echo BRANCH_NAME=main >> $GITHUB_ENV
+          else
+            echo BRANCH_NAME=$(echo ${{ github.head_ref }} | sed 's/\//-/g') >> $GITHUB_ENV
+          fi
         id: extract_branch
 
       - name: Bump version
@@ -39,4 +43,3 @@ jobs:
         with:
           name: version
           path: version.txt
-  
