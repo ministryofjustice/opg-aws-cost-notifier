@@ -9,6 +9,7 @@ on:
       - main
 jobs:
   version-bump:
+    name: "Bump & Write Version"
     runs-on: ubuntu-latest
     outputs:
       tag: ${{ steps.bump_version.outputs.tag }}
