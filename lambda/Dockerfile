@@ -5,6 +5,8 @@ FROM python:alpine3.16 AS python-alpine
 RUN apk add --no-cache \
     libstdc++
 
+RUN python -m pip install --upgrade pip
+
 FROM python-alpine as build-image
 
 # Install aws-lambda-cpp build dependencies
@@ -29,7 +31,6 @@ COPY function/send_cost_anomalies_to_slack.py ${FUNCTION_DIR}/send_cost_anomalie
 COPY requirements.txt requirements.txt
 
 # Install the runtime interface client
-RUN python -m pip install --upgrade pip
 RUN python -m pip install \
         --target ${FUNCTION_DIR} \
         --requirement requirements.txt
