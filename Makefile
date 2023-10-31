@@ -1,10 +1,16 @@
 default: test build scan lint terraform clean
 
 build:
-	docker build --file lambda/Dockerfile --tag aws_cost_notifier:latest lambda
+	docker compose build aws-cost-notifier
 
-scan:
-	trivy image aws_cost_notifier:latest
+test-results:
+	mkdir -p -m 0777 test-results .trivy-cache
+
+setup-directories: test-results
+
+scan: setup-directories
+	docker compose run --rm trivy image --format table --exit-code 0 311462405659.dkr.ecr.eu-west-1.amazonaws.com/shared/aws-cost-notifier:latest
+	docker compose run --rm trivy image --format sarif --output /test-results/trivy.sarif --exit-code 1 311462405659.dkr.ecr.eu-west-1.amazonaws.com/shared/aws-cost-notifier:latest
 
 venv: venv/touchfile
 
