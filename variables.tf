@@ -7,6 +7,12 @@ variable "ecr_repository_url" {
   description = "URL of the ECR repository"
 }
 
+variable "failed_invocation_sns_arn" {
+  type        = string
+  default     = ""
+  description = "ARN of SNS Topic to send failed invocations to."
+}
+
 variable "slack_channel_id" {
   type        = string
   description = "Slack's internal ID for the channel you want to post messages, format AB1C2DEF"
