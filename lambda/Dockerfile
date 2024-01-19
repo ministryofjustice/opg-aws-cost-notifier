@@ -32,14 +32,14 @@ COPY requirements.txt requirements.txt
 
 # Install the runtime interface client
 RUN python -m pip install \
-        --target ${FUNCTION_DIR} \
-        --requirement requirements.txt
+    --target ${FUNCTION_DIR} \
+    --requirement requirements.txt
 
 # Multi-stage build: grab a fresh copy of the base image
 FROM python-alpine AS production
 
 # Patch security vulnerabilities
-RUN apk upgrade --no-cache libcom_err libcrypto1.1 libssl1.1 ncurses-terminfo-base
+RUN apk upgrade --no-cache libcrypto1.1 libssl1.1 ncurses-terminfo-base sqlite-libs
 
 # Include global arg in this stage of the build
 ARG FUNCTION_DIR
