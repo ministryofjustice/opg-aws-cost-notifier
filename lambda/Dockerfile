@@ -39,7 +39,7 @@ RUN python -m pip install \
 FROM python-alpine AS production
 
 # Patch security vulnerabilities
-RUN apk upgrade --no-cache libcrypto1.1 libssl1.1 ncurses-terminfo-base sqlite-libs
+RUN apk upgrade --no-cache expat libcrypto1.1 libssl1.1 ncurses-terminfo-base sqlite-libs
 
 # Include global arg in this stage of the build
 ARG FUNCTION_DIR
