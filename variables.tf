@@ -1,4 +1,5 @@
 variable "account_name" {
+  type        = string
   description = "AWS account name"
 }
 

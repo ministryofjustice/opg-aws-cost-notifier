@@ -23,7 +23,7 @@ test: venv
 	. venv/bin/activate; pytest lambda
 
 lint:
-	cd local && terraform fmt -check -recursive
+	tflint --recursive
 
 terraform:
 	cd local && docker compose up -d

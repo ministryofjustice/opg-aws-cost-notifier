@@ -15,6 +15,7 @@ defaults:
 
 env:
   TERRAFORM_VERSION: 1.5.7
+  TFLINT_VERSION: 0.50.1
 
 jobs:
   lint-validate-and-plan:
@@ -25,10 +26,18 @@ jobs:
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: ${{ env.TERRAFORM_VERSION }}
+      - uses: terraform-linters/setup-tflint@v4
+        name: Setup TFLint
+        with:
+          tflint_version: v${{ env.TFLINT_VERSION }}
+
+      - name: Check Formating
+        id: tf_fmt
+        run: terraform fmt -check -recursive
 
       - name: Lint Terraform
         id: tf_lint
-        run: make lint
+        run: tflint --recursive
 
       - name: Validate & Plan Terraform
         id: tf_validate
