@@ -40,6 +40,6 @@ resource "aws_cloudwatch_metric_alarm" "failed_invocation" {
   threshold           = 0
 
   dimensions = {
-    FunctionName = "${aws_lambda_function.lambda_function.function_name}"
+    FunctionName = aws_lambda_function.lambda_function.function_name
   }
 }
