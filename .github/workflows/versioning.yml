@@ -41,7 +41,7 @@ jobs:
       - name: Write Version to file
         run: echo "${{ steps.bump_version.outputs.tag }}" > version.txt
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: version
           path: version.txt
