@@ -39,7 +39,7 @@ RUN python -m pip install \
 FROM python-alpine AS production
 
 # Patch security vulnerabilities
-RUN apk upgrade --no-cache busybox expat libcrypto1.1 libssl1.1 ncurses-terminfo-base sqlite-libs
+RUN apk upgrade --no-cache busybox expat libcrypto1.1 libssl1.1 musl musl-utils ncurses-terminfo-base sqlite-libs
 RUN pip install --upgrade setuptools
 
 # Include global arg in this stage of the build
