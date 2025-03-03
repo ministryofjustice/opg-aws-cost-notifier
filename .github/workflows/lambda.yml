@@ -70,7 +70,7 @@ jobs:
         id: extract_branch
 
       - name: Retrieve Version
-        uses: dawidd6/action-download-artifact@v8
+        uses: dawidd6/action-download-artifact@v9
         with:
           branch: ${{ env.BRANCH_NAME }}
           name: version
