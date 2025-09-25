@@ -20,7 +20,7 @@ jobs:
     outputs:
       tag: ${{ env.APP_VERSION }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: unfor19/install-aws-cli-action@v1
 
       - name: Test with pytest
@@ -45,7 +45,7 @@ jobs:
           sarif_file: 'test-results/trivy.sarif'
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_ACTIONS }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_ACTIONS }}
