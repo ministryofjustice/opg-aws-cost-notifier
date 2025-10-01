@@ -1,24 +1,24 @@
 # Define function directory
 ARG FUNCTION_DIR="/function"
 
-FROM python:alpine3.16 AS python-alpine
-RUN apk add --no-cache \
-    libstdc++
+FROM python:alpine AS python-alpine
+RUN apk -U --no-cache upgrade && \
+    apk add --no-cache \
+    libstdc++ \
+    zstd-libs
 
-RUN python -m pip install --upgrade pip
-
-FROM python-alpine as build-image
+FROM python-alpine AS build-image
 
 # Install aws-lambda-cpp build dependencies
 RUN apk add --no-cache \
-    build-base \
-    libtool \
     autoconf \
     automake \
-    libexecinfo-dev \
-    make \
+    build-base \
     cmake \
-    libcurl
+    elfutils-dev \
+    libcurl \
+    libtool \
+    make
 
 # Include global arg in this stage of the build
 ARG FUNCTION_DIR
@@ -31,6 +31,7 @@ COPY function/send_cost_anomalies_to_slack.py ${FUNCTION_DIR}/send_cost_anomalie
 COPY requirements.txt requirements.txt
 
 # Install the runtime interface client
+RUN python -m pip install --upgrade pip
 RUN python -m pip install \
     --target ${FUNCTION_DIR} \
     --requirement requirements.txt
@@ -39,14 +40,15 @@ RUN python -m pip install \
 FROM python-alpine AS production
 
 # Patch security vulnerabilities
-RUN apk upgrade --no-cache busybox expat libcrypto1.1 libssl1.1 musl musl-utils ncurses-terminfo-base sqlite-libs
+RUN apk upgrade --no-cache libcrypto3 libssl3
 RUN pip install --upgrade setuptools
 
 # Include global arg in this stage of the build
 ARG FUNCTION_DIR
 # Set working directory to function root directory
 WORKDIR ${FUNCTION_DIR}
-
+# Switch to Non-Root User
+USER 1001
 # Copy in the build image dependencies
 COPY --from=build-image ${FUNCTION_DIR} ${FUNCTION_DIR}
 
