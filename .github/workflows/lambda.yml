@@ -14,11 +14,16 @@ defaults:
   shell: bash
 
 jobs:
+  version:
+    name: Create Version & Tag
+    uses: ./.github/workflows/version.yml
+
   build-containers:
     name: "Test & Build Lambda Images"
+    needs: [version]
     runs-on: ubuntu-latest
     outputs:
-      tag: ${{ env.APP_VERSION }}
+      tag: ${{ needs.version.outputs.tag }}
     steps:
       - uses: actions/checkout@v5
       - uses: unfor19/install-aws-cli-action@v1
@@ -60,41 +65,22 @@ jobs:
         with:
           registries: 311462405659
 
-      - name: Extract branch name
-        run: |
-          if [ "${{ github.head_ref }}" == "" ]; then
-            echo BRANCH_NAME=main >> $GITHUB_ENV
-          else
-            echo BRANCH_NAME=$(echo ${{ github.head_ref }}) >> $GITHUB_ENV
-          fi
-        id: extract_branch
-
-      - name: Retrieve Version
-        uses: dawidd6/action-download-artifact@v11
-        with:
-          branch: ${{ env.BRANCH_NAME }}
-          name: version
-          search_artifacts: true
-          workflow: versioning.yml
-          workflow_conclusion: ""
-
-      - name: Add Version to Environment
-        run: echo APP_VERSION=`cat version.txt` >> $GITHUB_ENV
-
       - name: Push Container
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           COST_NOTIFIER_ECR_REPOSITORY: shared/aws-cost-notifier
         run: |
-          docker tag 311462405659.dkr.ecr.eu-west-1.amazonaws.com/shared/aws-cost-notifier:latest $ECR_REGISTRY/$COST_NOTIFIER_ECR_REPOSITORY:${{ env.APP_VERSION }}
-          if [ "${{ env.BRANCH_NAME }}" == "main" ]; then
-            docker tag 311462405659.dkr.ecr.eu-west-1.amazonaws.com/shared/aws-cost-notifier:latest $ECR_REGISTRY/$COST_NOTIFIER_ECR_REPOSITORY:main-${{ env.APP_VERSION }}
+          docker tag 311462405659.dkr.ecr.eu-west-1.amazonaws.com/shared/aws-cost-notifier:latest $ECR_REGISTRY/$COST_NOTIFIER_ECR_REPOSITORY:${{ needs.version.outputs.tag }}
+          if ${{ github.ref_name == 'main' }}
+          then
+            docker tag 311462405659.dkr.ecr.eu-west-1.amazonaws.com/shared/aws-cost-notifier:latest $ECR_REGISTRY/$COST_NOTIFIER_ECR_REPOSITORY:main-${{ needs.version.outputs.tag }}
+            docker tag 311462405659.dkr.ecr.eu-west-1.amazonaws.com/shared/aws-cost-notifier:latest $ECR_REGISTRY/$COST_NOTIFIER_ECR_REPOSITORY:main-${{ needs.version.outputs.tag }}-${{ needs.version.outputs.timestamp }}
             # We want all of the tags pushed
             docker push --all-tags $ECR_REGISTRY/$COST_NOTIFIER_ECR_REPOSITORY
           else
-            docker push $ECR_REGISTRY/$COST_NOTIFIER_ECR_REPOSITORY:${{ env.APP_VERSION }}
+            docker push $ECR_REGISTRY/$COST_NOTIFIER_ECR_REPOSITORY:${{ needs.version.outputs.tag }}
           fi
 
       - name: Put Tag
-        if: ${{ env.BRANCH_NAME == 'main' }}
-        run: aws ssm put-parameter --region "eu-west-1" --name "/shared/aws-cost-notifier-lambda-version" --type "String" --value "${{ env.APP_VERSION }}" --overwrite
+        if: github.ref == 'refs/heads/main'
+        run: aws ssm put-parameter --region "eu-west-1" --name "/shared/aws-cost-notifier-lambda-version" --type "String" --value "${{ needs.version.outputs.tag }}" --overwrite
