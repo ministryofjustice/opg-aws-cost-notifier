@@ -22,11 +22,11 @@ jobs:
     name: 'Validate Infrastructure'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: hashicorp/setup-terraform@v3
+      - uses: actions/checkout@v5.0.0
+      - uses: hashicorp/setup-terraform@v3.1.2
         with:
           terraform_version: ${{ env.TERRAFORM_VERSION }}
-      - uses: terraform-linters/setup-tflint@v6
+      - uses: terraform-linters/setup-tflint@v6.2.0
         name: Setup TFLint
         with:
           tflint_version: v${{ env.TFLINT_VERSION }}
