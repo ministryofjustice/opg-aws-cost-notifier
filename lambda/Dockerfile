@@ -6,6 +6,8 @@ RUN apk -U --no-cache upgrade && \
     apk add --no-cache \
     libstdc++ \
     zstd-libs
+# Upgrade Pip
+RUN python -m pip install --upgrade pip
 
 FROM python-alpine AS build-image
 
@@ -31,7 +33,6 @@ COPY function/send_cost_anomalies_to_slack.py ${FUNCTION_DIR}/send_cost_anomalie
 COPY requirements.txt requirements.txt
 
 # Install the runtime interface client
-RUN python -m pip install --upgrade pip
 RUN python -m pip install \
     --target ${FUNCTION_DIR} \
     --requirement requirements.txt
