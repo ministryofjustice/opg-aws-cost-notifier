@@ -35,6 +35,8 @@ jobs:
     name: "Test & Build Lambda Images"
     needs: [version]
     runs-on: ubuntu-latest
+    env:
+      BUILDX_NO_DEFAULT_ATTESTATIONS: 1
     outputs:
       tag: ${{ needs.version.outputs.tag }}
     steps:
