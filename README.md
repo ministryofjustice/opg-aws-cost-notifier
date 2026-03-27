@@ -1,6 +1,6 @@
 # opg-aws-cost-notifier
-The Office of the Public Guardian AWS cost notifier lambda and infrastructure: Managed by opg-org-infra &amp; Terraform. 
-
+The Office of the Public Guardian AWS cost notifier lambda and infrastructure: Managed by opg-org-infra &amp; Terraform.
+trigger workflow
 This can be deployed into any region, however `us-east-1` is a required provider as this is where cost anomaly alerts are produced.
 
 <!-- BEGIN_TF_DOCS -->
