@@ -41,16 +41,9 @@ jobs:
       tag: ${{ needs.version.outputs.tag }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-      - uses: unfor19/install-aws-cli-action@f5b46b7f32cf5e7ebd652656c5036bf83dd1e60c # 1.0.8
 
       - name: Test with pytest
         run: make test
-
-      - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@27d65e188ec43221b20d26de30f4892fad91df2f # v2.22.0
-        if: always()
-        with:
-          junit_files: '**/unit-tests.xml'
 
       - name: Build Container
         run: make build

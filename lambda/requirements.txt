@@ -1,3 +1,3 @@
-awslambdaric
-boto3
-slack_sdk
+awslambdaric==4.0.0
+boto3==1.42.81
+slack_sdk==3.41.0
