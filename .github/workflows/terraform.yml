@@ -17,6 +17,12 @@ env:
   TERRAFORM_VERSION: 1.5.7
   TFLINT_VERSION: 0.50.1
 
+permissions:
+  id-token: write
+  contents: read
+  security-events: write
+  pull-requests: read
+
 jobs:
   lint-validate-and-plan:
     name: 'Validate Infrastructure'
@@ -38,6 +44,36 @@ jobs:
       - name: Lint Terraform
         id: tf_lint
         run: tflint --recursive
+
+      - name: Configure OIDC AWS credentials
+        uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6.0.0
+        with:
+          role-to-assume: arn:aws:iam::311462405659:role/aws-cost-notifier-oidc-role
+          role-session-name: opg-aws-cost-notifier-github-actions-pull
+          role-duration-seconds: 900
+          aws-region: eu-west-1
+
+      - name: ECR Login
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@f2e9fc6c2b355c1890b65e6f6f0e2ac3e6e22f78 # v2.1.2
+        with:
+          registries: 311462405659
+
+      - name: Snky IAC
+        id: snyk_iac
+        uses: ministryofjustice/opg-github-actions/actions/snyk-iac@ceeda9d30ec7f6705c819d0b7664b9a79df99a3b # v4.8.0
+        with:
+          iac_test_directory: "./"
+          sarif_filename: "snyk-iac.sarif"
+          SNYK_TOKEN: ${{ secrets.snyk_opg_org_token }}
+
+      - name: Upload Snyk IAC scan results to GitHub Security tab
+        id: snyk_upload_sarif
+        uses: github/codeql-action/upload-sarif@c10b8064de6f491fea524254123dbe5e09572f13 # v4.35.1
+        if: always()
+        with:
+          category: "Terraform"
+          sarif_file: "test-results/snyk-iac.sarif"
 
       - name: Validate & Plan Terraform
         id: tf_validate
