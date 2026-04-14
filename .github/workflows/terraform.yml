@@ -66,6 +66,7 @@ jobs:
           iac_test_directory: "./"
           sarif_filename: "snyk-iac.sarif"
           SNYK_TOKEN: ${{ secrets.snyk_opg_org_token }}
+          snyk_test_args: "--detection-depth=0"
 
       - name: Upload Snyk IAC scan results to GitHub Security tab
         id: snyk_upload_sarif
