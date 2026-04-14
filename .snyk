@@ -1,3 +1,9 @@
 version: v1.25.1
-ignore: {}
+ignore:
+# IAC ignores
+  # LOW
+  '*':
+    - 'local > *':
+      reason: Don't care about local terraform.
+      created: 2026-04-14T14:00:00Z
 patch: {}
