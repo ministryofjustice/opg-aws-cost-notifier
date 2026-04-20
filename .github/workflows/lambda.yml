@@ -49,7 +49,7 @@ jobs:
         run: make build
 
       - name: Configure OIDC AWS credentials
-        uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6.0.0
+        uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37 # v6.1.0
         with:
           role-to-assume: arn:aws:iam::311462405659:role/aws-cost-notifier-oidc-role
           role-session-name: opg-aws-cost-notifier-github-actions-push
@@ -63,7 +63,7 @@ jobs:
           registries: 311462405659
 
       - name: Snyk Scan
-        uses: ministryofjustice/opg-github-actions/actions/snyk-scan@3a15a16fcc221821c2869eecd8822c5d62af2984 # v4.7.0
+        uses: ministryofjustice/opg-github-actions/actions/snyk-scan@ceeda9d30ec7f6705c819d0b7664b9a79df99a3b # v4.8.0
         with:
           SNYK_TEST_IMAGE: 311462405659.dkr.ecr.eu-west-1.amazonaws.com/shared/aws-cost-notifier:latest
           SNYK_TOKEN: ${{ secrets.SNYK_OPG_ORG_TOKEN }}
