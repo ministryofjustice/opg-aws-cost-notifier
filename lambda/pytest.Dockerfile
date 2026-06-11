@@ -1,4 +1,4 @@
-FROM python:3-bookworm@sha256:f357fca37376cc10aba3bb909d13bba0108a39670d7b9bc8b4039ac94674e874
+FROM python:3-bookworm@sha256:5fa5eb41d78d004d4b6d315ab566856b5fd331655440ea1f2690d9caeecfe6a5
 
 RUN mkdir /app
 
