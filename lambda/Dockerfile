@@ -1,7 +1,7 @@
 # Define function directory
 ARG FUNCTION_DIR="/function"
 
-FROM python:alpine@sha256:faee120f7885a06fcc9677922331391fa690d911c020abb9e8025ff3d908e510 AS python-alpine
+FROM python:alpine@sha256:c5c72336b2060db658391424c48466341838860a9f30efee9280ee53580d9537 AS python-alpine
 RUN apk -U --no-cache upgrade && \
     apk add --no-cache \
     libstdc++ \
