@@ -32,7 +32,7 @@ jobs:
       - uses: hashicorp/setup-terraform@5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85 # v4
         with:
           terraform_version: ${{ env.TERRAFORM_VERSION }}
-      - uses: terraform-linters/setup-tflint@6e1e0642c0289bd619021bf6b34e3c08ed1e005a # v6.3.0
+      - uses: terraform-linters/setup-tflint@1cf010d3c7aef302051ccdb68c14c5dc2efa34ef # v6.3.1
         name: Setup TFLint
         with:
           tflint_version: v${{ env.TFLINT_VERSION }}
@@ -46,7 +46,7 @@ jobs:
         run: tflint --recursive
 
       - name: Configure OIDC AWS credentials
-        uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
+        uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # v6.2.4
         with:
           role-to-assume: arn:aws:iam::311462405659:role/aws-cost-notifier-oidc-role
           role-session-name: opg-aws-cost-notifier-github-actions-pull
