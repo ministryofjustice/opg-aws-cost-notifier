@@ -46,7 +46,7 @@ jobs:
         run: tflint --recursive
 
       - name: Configure OIDC AWS credentials
-        uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # v6.2.4
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
         with:
           role-to-assume: arn:aws:iam::311462405659:role/aws-cost-notifier-oidc-role
           role-session-name: opg-aws-cost-notifier-github-actions-pull
@@ -61,7 +61,7 @@ jobs:
 
       - name: Snky IAC
         id: snyk_iac
-        uses: ministryofjustice/opg-github-actions/actions/snyk-iac@722a5f955424aaba01e9ca43d68390cd4048d6e1 # v4.10.2
+        uses: ministryofjustice/opg-github-actions/actions/snyk-iac@ae37b9b322286123971417e82b665e56e9d6aa3f # v4.10.3
         with:
           iac_test_directory: "./"
           sarif_filename: "snyk-iac.sarif"
