@@ -32,7 +32,7 @@ jobs:
       - uses: hashicorp/setup-terraform@5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85 # v4
         with:
           terraform_version: ${{ env.TERRAFORM_VERSION }}
-      - uses: terraform-linters/setup-tflint@1cf010d3c7aef302051ccdb68c14c5dc2efa34ef # v6.3.1
+      - uses: terraform-linters/setup-tflint@6ffdbaa3be476b3431f7275c26966ef32ff60337 # v6.3.2
         name: Setup TFLint
         with:
           tflint_version: v${{ env.TFLINT_VERSION }}
@@ -46,7 +46,7 @@ jobs:
         run: tflint --recursive
 
       - name: Configure OIDC AWS credentials
-        uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # v6.2.4
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
         with:
           role-to-assume: arn:aws:iam::311462405659:role/aws-cost-notifier-oidc-role
           role-session-name: opg-aws-cost-notifier-github-actions-pull
@@ -61,7 +61,7 @@ jobs:
 
       - name: Snky IAC
         id: snyk_iac
-        uses: ministryofjustice/opg-github-actions/actions/snyk-iac@722a5f955424aaba01e9ca43d68390cd4048d6e1 # v4.10.2
+        uses: ministryofjustice/opg-github-actions/actions/snyk-iac@ae37b9b322286123971417e82b665e56e9d6aa3f # v4.10.3
         with:
           iac_test_directory: "./"
           sarif_filename: "snyk-iac.sarif"
@@ -70,7 +70,7 @@ jobs:
 
       - name: Upload Snyk IAC scan results to GitHub Security tab
         id: snyk_upload_sarif
-        uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4.38.0
+        uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
         if: always()
         with:
           category: "Terraform"
