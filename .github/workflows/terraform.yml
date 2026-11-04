@@ -61,7 +61,7 @@ jobs:
 
       - name: Snky IAC
         id: snyk_iac
-        uses: ministryofjustice/opg-github-actions/actions/snyk-iac@ae37b9b322286123971417e82b665e56e9d6aa3f # v4.10.3
+        uses: ministryofjustice/opg-github-actions/actions/snyk-iac@12bdbe54f92af873347bc0cd6f4e7769265c1a90 # v4.10.5
         with:
           iac_test_directory: "./"
           sarif_filename: "snyk-iac.sarif"
@@ -70,7 +70,7 @@ jobs:
 
       - name: Upload Snyk IAC scan results to GitHub Security tab
         id: snyk_upload_sarif
-        uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
+        uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
         if: always()
         with:
           category: "Terraform"
