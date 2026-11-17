@@ -9,5 +9,5 @@ services:
       context: ./lambda
       dockerfile: pytest.Dockerfile
     volumes:
-      - ./lambda:/app
+      - ./lambda/function:/app/function
     command: pytest
