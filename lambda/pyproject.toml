@@ -1,0 +1,17 @@
+[project]
+name = "aws-cost-notifier"
+version = "0.1.0"
+requires-python = ">=3.15"
+dependencies = [
+    "awslambdaric==4.2.3",
+    "boto3==1.43.123",
+    "slack_sdk==3.46.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest==9.2.0",
+]
+
+[tool.uv]
+package = false
