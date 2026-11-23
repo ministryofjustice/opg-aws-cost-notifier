@@ -5,7 +5,7 @@ requires-python = ">=3.15"
 dependencies = [
     "awslambdaric==4.2.3",
     "boto3==1.43.123",
-    "slack_sdk==3.46.0",
+    "slack_sdk==3.47.0",
 ]
 
 [dependency-groups]
