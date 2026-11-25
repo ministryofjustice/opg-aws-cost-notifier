@@ -2,7 +2,7 @@
 version: "3.6"
 services:
   ministack:
-    image: ministackorg/ministack:1.5.35@sha256:ba06991f4d43671c76cb5303f6de227d332e368afb1beffef751205db7074e6a
+    image: ministackorg/ministack:1.5.42@sha256:f215f6e18f314a772301a7bb64819d26d2b736739cce99ccc7b53048ffbb4b1f
     ports:
       - "4566:4566"
     healthcheck:
